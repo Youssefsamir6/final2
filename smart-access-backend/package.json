@@ -1,0 +1,42 @@
+{
+  "name": "smart-access-backend",
+  "version": "1.0.0",
+  "description": "Smart Access Control Backend with Face Recognition AI",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "create:superuser": "node scripts/create-superuser.js",
+    "create:superuser:mock": "node scripts/create-superuser.js --mock",
+    "worker": "cd ai-worker && python app.py",
+    "dev:full": "concurrently \"npm run dev\" \"npm run worker\"",
+    "db:optimize": "node scripts/db-optimize.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.15.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "joi": "^18.1.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.1",
+    "mssql": "^12.5.0",
+    "multer": "^2.1.1",
+    "openai": "^6.34.0",
+    "socket.io": "^4.8.0",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.11"
+  }
+}

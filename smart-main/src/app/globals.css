@@ -1,0 +1,215 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+--background: oklch(0.08 0.01 260);
+  --foreground: oklch(0.99 0 0);
+  --card: oklch(0.12 0.02 265);
+  --card-foreground: oklch(0.99 0 0);
+  --popover: oklch(0.13 0.02 265);
+  --popover-foreground: oklch(0.99 0 0);
+  --primary: oklch(0.90 0.28 195); /* Bright cyan */
+  --primary-foreground: oklch(0.08 0.01 260);
+  --secondary: oklch(0.18 0.03 280); /* Electric purple */
+  --secondary-foreground: oklch(0.99 0 0);
+  --muted: oklch(0.18 0.02 260);
+  --muted-foreground: oklch(0.80 0.03 260);
+--accent: oklch(0.88 0.26 220); /* Neon blue */
+  --accent-foreground: oklch(0.08 0.01 260);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.90 0.28 195);
+--chart-1: oklch(0.90 0.28 195); /* Neon cyan */
+  --chart-2: oklch(0.88 0.26 280); /* Magenta */
+  --chart-3: oklch(0.92 0.24 145); /* Lime */
+  --chart-4: oklch(0.86 0.27 220); /* Blue */
+  --chart-5: oklch(0.84 0.25 330); /* Pink */
+  --sidebar: oklch(0.11 0.02 265);
+  --sidebar-foreground: oklch(0.99 0 0);
+  --sidebar-primary: oklch(0.90 0.28 195);
+  --sidebar-primary-foreground: oklch(0.08 0.01 260);
+  --sidebar-accent: oklch(0.20 0.04 280);
+  --sidebar-accent-foreground: oklch(0.99 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.90 0.28 195);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(
+        900px 500px at 10% -10%,
+        color-mix(in oklab, oklch(0.72 0.19 255) 10%, transparent),
+        transparent 60%
+      ),
+      radial-gradient(
+        900px 500px at 90% 0%,
+        color-mix(in oklab, oklch(0.78 0.14 200) 8%, transparent),
+        transparent 55%
+      ),
+      radial-gradient(
+        700px 380px at 50% 110%,
+        color-mix(in oklab, oklch(0.78 0.18 320) 6%, transparent),
+        transparent 55%
+      );
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(900px 500px at 10% -10%, color-mix(in oklab, oklch(0.90 0.28 195) 35%, transparent), transparent 50%),
+      radial-gradient(900px 500px at 90% 0%, color-mix(in oklab, oklch(0.88 0.26 280) 28%, transparent), transparent 50%),
+      radial-gradient(700px 380px at 50% 110%, color-mix(in oklab, oklch(0.92 0.24 145) 22%, transparent), transparent 50%),
+      radial-gradient(600px 400px at 20% 80%, color-mix(in oklab, oklch(0.86 0.27 220) 20%, transparent), transparent 60%);
+    background-attachment: fixed;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: color-mix(in oklab, var(--card) 92%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+    box-shadow:
+      0 8px 24px color-mix(in oklab, black 10%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 38%, transparent);
+    backdrop-filter: blur(14px);
+  }
+
+  .dark .glass {
+    background: color-mix(in oklab, oklch(0.12 0.02 265) 75%, transparent);
+    border: 1px solid color-mix(in oklab, oklch(1 0 0 / 12%) 90%, transparent);
+    box-shadow:
+      0 16px 48px color-mix(in oklab, black 60%, transparent),
+      0 0 0 1px color-mix(in oklab, oklch(0.90 0.28 195) 20%, transparent),
+      inset 0 1px 0 color-mix(in oklab, white 12%, transparent),
+      inset 0 0 0 1px color-mix(in oklab, white 8%, transparent);
+    backdrop-filter: blur(20px);
+  }
+
+  .neon-ring {
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, oklch(0.90 0.28 195) 50%, transparent),
+      0 0 32px color-mix(in oklab, oklch(0.90 0.28 195) 25%, transparent),
+      0 0 64px color-mix(in oklab, oklch(0.90 0.28 195) 10%, transparent);
+  }
+
+  .neon-glow-cyan { box-shadow: 0 0 20px color-mix(in oklab, oklch(0.90 0.28 195) 30%, transparent); }
+  .neon-glow-purple { box-shadow: 0 0 20px color-mix(in oklab, oklch(0.88 0.26 280) 30%, transparent); }
+  .neon-glow-blue { box-shadow: 0 0 20px color-mix(in oklab, oklch(0.88 0.26 220) 30%, transparent); }
+
+  .frosted { backdrop-filter: blur(24px); }
+}
+
+/* Dark-mode fixes: remap Tailwind white-bg utilities to themed card colors
+   and ensure readable text on semi-transparent white overlays. */
+.dark .bg-white {
+  background-color: var(--card) !important;
+}
+.dark .bg-white\/5 {
+  background-color: color-mix(in oklab, var(--card) 5%, transparent) !important;
+}
+.dark .bg-white\/10 {
+  background-color: color-mix(in oklab, var(--card) 10%, transparent) !important;
+}
+.dark .bg-white\/[0\\.04] {
+  background-color: color-mix(in oklab, var(--card) 4%, transparent) !important;
+}
+.dark .bg-white\/[0\\.06] {
+  background-color: color-mix(in oklab, var(--card) 6%, transparent) !important;
+}
+.dark .hover\:bg-white\/10:hover {
+  background-color: color-mix(in oklab, var(--card) 10%, transparent) !important;
+}
+.dark .text-white {
+  color: var(--foreground) !important;
+}
+

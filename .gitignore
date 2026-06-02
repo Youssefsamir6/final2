@@ -1,0 +1,29 @@
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+*.log
+
+# Models
+*.pt
+*.pth
+*.onnx
+*.ckpt
+
+# Env
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/

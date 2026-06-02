@@ -1,0 +1,256 @@
+{
+  "info": {
+    "name": "Smart Access Backend - AI Endpoints",
+    "description": "Test face recognition, smart access, user face management. \n\nPrerequisites:\n1. Run `npm run dev` (backend)\n2. Run `cd ai-worker && python app.py` (AI service)\n3. MongoDB running\n4. `node seed.js` for test data\n\nAuth:\n- Device: X-API-Key: dev-key-123\n- Admin: POST /auth/login → Bearer {{token}}\n\nImage: Use multipart 'image' file OR body 'image' base64 (data:image/jpeg;base64,...)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "deviceKey",
+      "value": "dev-key-123"
+    },
+    {
+      "key": "testImageB64",
+      "value": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8Al4iZ3M7M9mXvY3cM6W6t2w1E7FtL6L9O2kY0pE/b1kVVP5V0hFRXCb2V7w/9k="
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (get admin token)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@smartaccess.com\",\n  \"password\": \"admin123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Device AI (X-API-Key)",
+      "item": [
+        {
+          "name": "POST /ai/device/recognition",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Has recognition\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.recognition).to.exist;",
+                  "    pm.expect(json.recognition.userId).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{deviceKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "deviceId",
+                  "value": "device-001",
+                  "type": "text"
+                },
+                {
+                  "key": "gateName",
+                  "value": "Main Gate",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/device/recognition",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "device", "recognition"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /ai/device/smart-access (auto-logs)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{deviceKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"{{testImageB64}}\",\n  \"deviceId\": \"device-001\",\n  \"gateName\": \"Main Gate\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/device/smart-access",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "device", "smart-access"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin AI (Bearer Token)",
+      "item": [
+        {
+          "name": "POST /ai/admin/recognition",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"{{testImageB64}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/admin/recognition",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "admin", "recognition"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /ai/admin/extract-embedding",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"{{testImageB64}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/ai/admin/extract-embedding",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ai", "admin", "extract-embedding"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users - Face Management",
+      "item": [
+        {
+          "name": "POST /users/:id/face-images (upload)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "/path/to/face1.jpg"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "/path/to/face2.jpg"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/users/67c7a5b0e4b0a1234567890/face-images",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "67c7a5b0e4b0a1234567890", "face-images"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
