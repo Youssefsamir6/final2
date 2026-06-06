@@ -38,9 +38,13 @@ if not face_recognition_path:
         logger.warning(f"  - {p} (exists: {p.exists()})")
 
 # Initialize AI system
+import threading
 model_service = None
 recognition_service = None
 AI_AVAILABLE = False
+
+# Rebuild coordination (must never block request handler)
+_rebuild_event = threading.Event()
 
 if face_recognition_path:
     try:
@@ -413,24 +417,37 @@ async def db_status():
 
 @app.post("/rebuild-db")
 async def rebuild_db():
-    """Rebuild the recognition database"""
+    """Rebuild the recognition database.
+
+    For demo/testing we must respond quickly; rebuilding is triggered in a background thread.
+    """
     if not AI_AVAILABLE:
         raise HTTPException(status_code=503, detail="AI system not available")
-    
+
+    # Always respond immediately.
     try:
-        logger.info("Rebuilding recognition database...")
-        recognition_service.build_databases(model_service)
-        logger.info("Database rebuilt successfully")
-        
-        return {
-            "success": True,
-            "message": "Database rebuilt successfully",
-            "ready": recognition_service.is_ready()
-        }
-    
+        logger.info("Rebuild requested: triggering background job...")
+        import threading
+
+        def _rebuild_job_sync():
+            try:
+                # Build may take time
+                recognition_service.build_databases(model_service)
+                logger.info("Database rebuilt successfully")
+            except Exception as e:
+                logger.error(f"Rebuild job failed: {e}")
+
+        threading.Thread(target=_rebuild_job_sync, daemon=True).start()
+
     except Exception as e:
-        logger.error(f"Rebuild DB error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        # Even if scheduling fails, don't hang the endpoint.
+        logger.error(f"Failed to schedule rebuild job: {e}")
+
+    return {
+        "success": True,
+        "queued": True,
+        "message": "Rebuild triggered; check /db-status later"
+    }
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

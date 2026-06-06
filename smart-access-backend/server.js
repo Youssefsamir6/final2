@@ -43,7 +43,7 @@ app.use(cors({
   origin: corsOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'x-api-key']
 }));
 
 // Socket.io with security headers
@@ -219,13 +219,13 @@ server.listen(PORT, () => {
     type: 'SERVER_START',
     port: PORT,
     environment: config.app.env,
-    database: config.db.useMockDB ? 'Mock DB' : config.db.server,
+    database: config.db.server,
     corsOrigin: config.security.corsOrigin
   });
   
   console.log(`\n✓ Server running on port ${PORT}`);
   console.log(`✓ Environment: ${config.app.env}`);
-  console.log(`✓ Database: ${config.db.useMockDB ? 'Mock DB' : config.db.server}`);
+  console.log(`✓ Database: SQL Server - ${config.db.server}:${config.db.port}`);
   console.log(`✓ CORS enabled for: ${config.security.corsOrigin}`);
   console.log(`✓ Logs location: ./logs/\n`);
 });

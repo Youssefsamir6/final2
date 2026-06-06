@@ -8,11 +8,10 @@
     "start": "node server.js",
     "seed": "node seed.js",
     "create:superuser": "node scripts/create-superuser.js",
-    "create:superuser:mock": "node scripts/create-superuser.js --mock",
     "worker": "cd ai-worker && python app.py",
     "dev:full": "concurrently \"npm run dev\" \"npm run worker\"",
     "db:optimize": "node scripts/db-optimize.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test-ai-integration.js"
   },
   "keywords": [],
   "author": "",

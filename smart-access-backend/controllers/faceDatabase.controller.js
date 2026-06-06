@@ -69,11 +69,21 @@ const addPerson = async (req, res) => {
  * Rebuild face recognition database
  */
 const rebuild = async (req, res) => {
+  // Demo/test friendly: rebuild can be slow (model rebuild + DB rebuild). Queue it and respond immediately.
   try {
-    logSuccess('Rebuilding face database...');
-    const result = await rebuildDatabase();
-    logSuccess('Face database rebuilt', { ready: result.ready });
-    res.json({ success: true, data: result });
+    logSuccess('Rebuild requested (queued)...');
+
+    // Fire-and-forget async rebuild
+    (async () => {
+      try {
+        const result = await rebuildDatabase();
+        logSuccess('Face database rebuilt', { ready: result.ready });
+      } catch (error) {
+        logError('Failed to rebuild database (async)', error);
+      }
+    })();
+
+    res.json({ success: true, data: { queued: true } });
   } catch (error) {
     logError('Failed to rebuild database', error);
     throw new AppError(error.message, 500);

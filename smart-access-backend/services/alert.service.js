@@ -19,16 +19,27 @@ const createAlert = async ({ userId, type, message = '', severity = 'Medium' }) 
     
     const newAlert = {
       id: result[0]?.id,
-      userId, 
-      alert_type: type, 
-      description: message, 
+      userId,
+      alert_type: type,
+      description: message,
       severity,
       created_at: new Date(),
-      status: 'Open'
+      status: 'Open',
+
+      // Payload normalization for smart-main AlertsPanel
+      title: type,
+      location: 'Main Gate',
+      source: 'Access Control',
+      severity: (severity === 'High' || severity === 'critical')
+        ? 'critical'
+        : (severity === 'Medium' || severity === 'warning')
+          ? 'warning'
+          : 'info',
     };
-    
+
     // Socket emit
     io.emit('newAlert', newAlert);
+
     
     return newAlert;
   } catch (error) {
@@ -36,13 +47,24 @@ const createAlert = async ({ userId, type, message = '', severity = 'Medium' }) 
     // Still emit even if DB fails
     const newAlert = {
       id: Date.now(),
-      userId, 
-      alert_type: type, 
-      description: message, 
+      userId,
+      alert_type: type,
+      description: message,
       severity,
-      created_at: new Date()
+      created_at: new Date(),
+      
+      // Payload normalization for smart-main AlertsPanel
+      title: type,
+      location: 'Main Gate',
+      source: 'Access Control',
+      severity: (severity === 'High' || severity === 'critical')
+        ? 'critical'
+        : (severity === 'Medium' || severity === 'warning')
+          ? 'warning'
+          : 'info',
     };
     io.emit('newAlert', newAlert);
+
     return newAlert;
   }
 };

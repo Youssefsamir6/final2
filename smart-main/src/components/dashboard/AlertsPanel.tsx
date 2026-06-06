@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { makeAlerts } from "@/lib/mock";
+
 import { useSocket } from "@/context/SocketProvider";
 
 function Blinking({ children }: { children: React.ReactNode }) {
@@ -36,6 +36,7 @@ function AlertsPanelComponent() {
                     ? "bg-yellow-50 border-yellow-200"
                     : "bg-card"
               }`}
+
             >
               <div className="flex items-start justify-between">
                 <div>

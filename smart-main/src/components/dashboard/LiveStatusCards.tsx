@@ -3,21 +3,27 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { makeStats, makeAlerts, makeLogs } from "@/lib/mock";
+import { makeStats } from "@/lib/mock";
 import { useSocket } from "@/context/SocketProvider";
+import { estimateOccupancyFromLogs } from "@/lib/occupancy";
 
 export default function LiveStatusCards() {
   const { logs: socketLogs, alerts: socketAlerts } = useSocket();
 
   const stats = React.useMemo(() => makeStats(), []);
 
-  const logs = React.useMemo(() => (socketLogs && socketLogs.length ? socketLogs : makeLogs()), [socketLogs]);
-  const alerts = React.useMemo(() => (socketAlerts && socketAlerts.length ? socketAlerts : makeAlerts()), [socketAlerts]);
+  const logs = React.useMemo(() => (socketLogs && socketLogs.length ? socketLogs : []), [socketLogs]);
+  const alerts = React.useMemo(() => (socketAlerts && socketAlerts.length ? socketAlerts : []), [socketAlerts]);
 
   const authorizedToday = logs.filter((l: any) => l.status === 'authorized').length;
   const unauthorized = logs.filter((l: any) => l.status !== 'authorized').length;
   const activeGates = Array.from(new Set(logs.map((l: any) => l.location))).length;
-  const peopleInside = Math.max(0, Math.round(stats.totalStudents * 0.12));
+
+  const { peopleInside } = React.useMemo(() => {
+    return estimateOccupancyFromLogs(logs);
+  }, [logs]);
+
+
   const alertsToday = alerts.length;
 
   return (

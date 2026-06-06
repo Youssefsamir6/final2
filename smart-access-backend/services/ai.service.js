@@ -43,10 +43,7 @@ const recognizeFace = async (imageBase64) => {
     }
   } catch (error) {
     console.error('AI service error:', error.message);
-    
-    // Fallback to legacy mock for dev/robustness
-    const { recognizeFace: mock } = require('./accessEvent.service');
-    return mock(imageBase64);
+    throw error; // Critical service - don't fallback silently
   }
 };
 

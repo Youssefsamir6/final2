@@ -90,13 +90,6 @@ const verifyToken = (token) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     return { userId: decoded.userId, role: decoded.role, email: decoded.email };
   } catch (error) {
-    // Fallback: support old mock tokens during transition
-    if (token.startsWith('mock_')) {
-      const parts = token.split('_');
-      if (parts.length >= 3) {
-        return { userId: parts[1], role: parts.slice(2).join('_') };
-      }
-    }
     throw new Error('Invalid token');
   }
 };

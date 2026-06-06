@@ -1,15 +1,22 @@
 "use client";
 
 import React from "react";
-import { makeLogs } from "@/lib/mock";
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSocket } from "@/context/SocketProvider";
 
 function PersonRecognitionComponent() {
   const { logs: socketLogs } = useSocket();
-  const latest = React.useMemo(() => (socketLogs && socketLogs.length ? socketLogs[0] : makeLogs()[0]), [socketLogs]);
+  const latest = React.useMemo(() => (socketLogs && socketLogs.length ? socketLogs[0] : null), [socketLogs]);
 
-  if (!latest) return null;
+  if (!latest) {
+    return (
+      <div className="p-4 border rounded-md bg-card">
+        <h3 className="text-lg font-semibold">Person Recognition</h3>
+        <div className="text-sm text-muted-foreground mt-2">No live recognition events yet — start the camera device.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 border rounded-md bg-card">

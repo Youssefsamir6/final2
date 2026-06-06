@@ -65,16 +65,12 @@ const maintenanceQueries = [
 ];
 
 /**
- * Connection string formatter for different environments
+ * Connection string formatter for SQL Server
  */
 const getConnectionString = () => {
   const { server, name, user, password, port, encrypt, trustServerCertificate } = config.db;
 
-  if (config.db.useMockDB) {
-    return null; // Mock DB doesn't need connection string
-  }
-
-  // For SQL Server
+  // SQL Server connection
   return {
     server,
     database: name,

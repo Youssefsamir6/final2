@@ -1,20 +1,21 @@
 const sql = require('mssql');
+const envConfig = require('./env');
 
-// SQL Server configuration - using SQLEXPRESS instance
+// SQL Server configuration - uses environment variables from .env
 const config = {
-  server: "127.0.0.1",
-  database: "smart_access_system",
-  port: 61812,
+  server: envConfig.db.server,
+  database: envConfig.db.name,
+  port: envConfig.db.port,
   authentication: {
     type: 'default',
     options: {
-      userName: "smartaccess",
-      password: "SmartAccess123!"
+      userName: envConfig.db.user,
+      password: envConfig.db.password
     }
   },
   options: {
-    trustServerCertificate: true,
-    encrypt: false,
+    trustServerCertificate: envConfig.db.trustServerCertificate,
+    encrypt: envConfig.db.encrypt,
     enableArithAbort: true,
     connectionTimeout: 15000,
     requestTimeout: 15000
@@ -30,13 +31,12 @@ const connectDB = async () => {
   try {
     if (!pool || !pool.connected) {
       pool = await sql.connect(config);
-      console.log(`SQL Server Connected: 127.0.0.1:49668`);
-
+      console.log(`✓ SQL Server Connected: ${config.server}:${config.port}/${config.database}`);
     }
     return pool;
   } catch (error) {
-    console.error('Database connection error:', error.message);
-    return null;
+    console.error('✗ Database connection error:', error.message);
+    throw error; // Don't silently fail - critical for production
   }
 };
 

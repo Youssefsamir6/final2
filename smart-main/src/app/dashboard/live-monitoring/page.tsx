@@ -4,8 +4,10 @@ import React from "react";
 import LiveStatusCards from "@/components/dashboard/LiveStatusCards";
 import LiveActivityFeed from "@/components/dashboard/LiveActivityFeed";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
-import CameraGrid from "@/components/dashboard/CameraGrid";
+import CameraFeeds from "@/components/dashboard/CameraFeeds";
+
 import PersonRecognition from "@/components/dashboard/PersonRecognition";
+
 
 export default function LiveMonitoringPage() {
   return (
@@ -25,7 +27,8 @@ export default function LiveMonitoringPage() {
         </div>
       </div>
 
-      <CameraGrid />
+      <CameraFeeds />
+
     </div>
   );
 }

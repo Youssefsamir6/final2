@@ -39,7 +39,7 @@ async function generateRandomLog() {
 }
 
 function generateRandomAlert() {
-  const severities = ['Low', 'Medium', 'High'];
+  const severities = ['low', 'medium', 'high'];
   const types = ['Unauthorized Access', 'Tailgating Detected', 'Suspicious Loitering', 'Off-Hours Access'];
   const locations = ['North Gate', 'Main Entrance', 'South Gate', 'Library Exit'];
 
@@ -51,8 +51,19 @@ function generateRandomAlert() {
     timestamp: new Date(),
     userId: null,
     isRead: false
+  }).then((a) => {
+    // Ensure payload matches frontend AlertsPanel expectations
+    return {
+      ...a,
+      title: a.alert_type,
+      location: locations[Math.floor(Math.random() * locations.length)],
+      source: 'camera-client',
+      severity: a.severity === 'high' ? 'critical' : (a.severity === 'medium' ? 'warning' : 'info')
+    };
   });
 }
+
+
 
 // Socket room management for real-time logs/alerts/access events
 io.on('connection', (socket) => {
@@ -84,32 +95,56 @@ io.on('connection', (socket) => {
       console.log(`Received ping-test from ${socket.id}:`, data);
     });
 
-    // Simulate periodic events
-    const logInterval = setInterval(() => {
-      (async () => {
-        try {
-          const newLog = await generateRandomLog();
-          if (newLog) {
-            io.to('logs').emit('liveLog', newLog);
-            console.log('Emitted new log:', newLog.location, newLog.status);
-          }
-        } catch (e) {
-          console.error('Error generating/emitting random log:', e);
-        }
-      })();
-    }, 20000); // Every 20s
+    // Simulate periodic events (disable for real camera demo)
+    const demoSimulation = (process.env.DEMO_SIMULATION || '').toLowerCase() !== 'false';
 
-    const alertInterval = setInterval(() => {
-      (async () => {
-        try {
-          const newAlert = await generateRandomAlert();
-          io.to('alerts').emit('newAlert', newAlert);
-          console.log('Emitted new alert:', newAlert.alert_type || newAlert.type);
-        } catch (e) {
-          console.error('Error generating/emitting random alert:', e);
-        }
-      })();
-    }, 45000); // Every 45s
+    let logInterval = null;
+    let alertInterval = null;
+
+    if (demoSimulation) {
+      logInterval = setInterval(() => {
+        (async () => {
+          try {
+            const newLog = await generateRandomLog();
+            if (newLog) {
+              io.to('logs').emit('liveLog', newLog);
+              console.log('Emitted new log:', newLog.location, newLog.status);
+            }
+          } catch (e) {
+            console.error('Error generating/emitting random log:', e);
+          }
+        })();
+      }, 20000); // Every 20s
+
+      alertInterval = setInterval(() => {
+        (async () => {
+          try {
+            const newAlert = await generateRandomAlert();
+// Ensure payload matches smart-main AlertsPanel expectations
+          const normalizedAlert = {
+            id: newAlert.id ?? Date.now(),
+            title: newAlert.title || newAlert.alert_type || newAlert.type || 'Alert',
+            location: newAlert.location || newAlert.gateName || 'Main Gate',
+            source: newAlert.source || newAlert.userId ? 'Access Control' : 'Camera AI',
+            severity: (newAlert.severity === 'High' || newAlert.severity === 'critical')
+              ? 'critical'
+              : (newAlert.severity === 'Medium' || newAlert.severity === 'warning')
+                ? 'warning'
+                : 'info',
+            created_at: newAlert.created_at || new Date(),
+            description: newAlert.description || newAlert.message || '',
+          };
+
+          io.to('alerts').emit('newAlert', normalizedAlert);
+          console.log('Emitted new alert:', normalizedAlert.title, normalizedAlert.severity);
+
+          } catch (e) {
+            console.error('Error generating/emitting random alert:', e);
+          }
+        })();
+      }, 45000); // Every 45s
+    }
+
 
     socket.on('join-logs', async () => {
       socket.join('logs');
@@ -158,9 +193,10 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
       console.log('Client disconnected:', socket.id);
-      clearInterval(logInterval);
-      clearInterval(alertInterval);
+      if (logInterval) clearInterval(logInterval);
+      if (alertInterval) clearInterval(alertInterval);
     });
+
   })();
 });
 

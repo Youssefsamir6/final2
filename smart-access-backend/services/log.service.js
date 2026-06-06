@@ -1,5 +1,3 @@
-// const Log = require('../models/Log.model'); // Removed for mock mode
-// const User = require('../models/User.model'); // Removed for mock mode
 const { createAlert } = require('./alert.service');
 const { executeQuery, sql } = require('../config/db');
 
@@ -41,9 +39,16 @@ const createLog = async ({ photoUrl, name, studentId, location, userId, status, 
       id: result[0]?.id,
       _id: result[0]?.id?.toString() 
     };
-    
+
+    // Normalize status casing for frontend sound/logic compatibility
+    const normalizedLog = {
+      ...log,
+      status: log.status === 'Authorized' ? 'authorized' : (log.status === 'Unauthorized' ? 'unauthorized' : log.status)
+    };
+
     // Socket emit - general logs
-    io.emit('liveLog', log);
+    io.emit('liveLog', normalizedLog);
+
 
     // Auth-specific emit
     if (method === 'login') {

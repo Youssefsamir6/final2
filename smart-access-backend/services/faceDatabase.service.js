@@ -1,4 +1,6 @@
 const axios = require('axios');
+const FormData = require('form-data');
+const fs = require('fs');
 
 // AI Worker URL from env (default local)
 const AI_URL = process.env.AI_URL || 'http://localhost:5000';
@@ -28,17 +30,17 @@ const addPersonToDatabase = async (userId, imageBuffer, filename) => {
   try {
     const formData = new FormData();
     formData.append('user_id', userId);
-    
-    // Create a Blob from the buffer
-    const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
-    formData.append('image', blob, filename);
+    formData.append('image', imageBuffer, {
+      filename: filename || `${userId}.jpg`,
+      contentType: 'image/jpeg'
+    });
     
     const response = await axios.post(
       `${AI_URL}/add-person`,
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          ...formData.getHeaders()
         },
         timeout: 30000 // Longer timeout for database rebuild
       }

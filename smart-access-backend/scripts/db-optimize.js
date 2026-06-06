@@ -19,28 +19,20 @@ console.log('\n==========================================');
 console.log('  Database Optimization Script');
 console.log('==========================================\n');
 
-if (config.db.useMockDB) {
-  console.log('❌ Cannot optimize Mock DB - SQL Server required');
-  console.log('   Set USE_MOCK_DB=false in .env to use SQL Server\n');
-  process.exit(1);
-}
-
-// Mock query executor (replace with actual SQL Server connection in production)
-const mockExecutor = async (query) => {
-  console.log(`[Query] ${query.substring(0, 80)}...`);
-  // In production, this would execute against your SQL Server instance
-  return { success: true };
-};
+// SQL Server connection required
+const { connectDB } = require('../config/db');
 
 async function runOptimization() {
   try {
+    // Ensure DB connection
+    await connectDB();
     logger.info('Database optimization started');
     
     console.log('\n1️⃣  Creating indexes...');
-    await createIndexes(mockExecutor);
+    await createIndexes();
     
     console.log('\n2️⃣  Updating statistics...');
-    await updateStatistics(mockExecutor);
+    await updateStatistics();
     
     console.log('\n✅ Database optimization complete!');
     logger.info('Database optimization completed successfully');
