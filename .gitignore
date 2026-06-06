@@ -24,6 +24,14 @@ logs/
 .env
 .env.*
 
-# IDE
+# IDE / Editors
 .vscode/
 .idea/
+.vs/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-data/
